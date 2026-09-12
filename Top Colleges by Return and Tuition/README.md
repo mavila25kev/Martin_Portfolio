@@ -48,15 +48,40 @@ df.to_csv('CollegesData.csv', index= False)
 ```
 
 2. After exporting to a CSV it can be seen from the image below that all columns are comma separated which can be loaded directly into MYSQL since we will have to option indicate the comma as the delimiter but I went ahead and selected the option within Excel for Text to Columns to have this done now. This will ensure that no data from rows will be lost when loaded into MYSQL. The final result is what I was aiming for seen in the second image.
-
-
+<br>
 <img width="900" height="400" alt="Image" src="https://github.com/user-attachments/assets/8d89ceb6-8e2a-41a1-a30f-00357cb2acd0" />  
 <img width="900" height="400" alt="Image" src="https://github.com/user-attachments/assets/00c73c73-f70e-42c8-8898-ae109c97aa41" />
 
-
 3.  The two other supplementary datasets were already saved in Excel Files. The image on the left shows the final salary potential dataset which takes the median reported salary of graduates for each reporting university by state. There were other columns included which show the stem percentage of students and other survey type results which I removed from the dataset here in the excel file as they we will not be needed. The image on the right shows the final tuition cost dataset which show the in state and out of state tuition totals by reporting university by state. There were other columns which breakdown the tuition cost by room and board, state code, degree length and school type. The degree length was filtered for only 4 year degree schools and the type(private/public/etc) was removed since it is not relevant in our main data table, I kept the state code because the main table includes a state code as well which can be used for future joins between the 3 tables.
+<br>
+<img width="1200" height="600" alt="Image" src="https://github.com/user-attachments/assets/0492bc79-b1f5-44fc-9ca1-6cb77cbfebe9" /> 
+<img width="1200" height="600" alt="Image" src="https://github.com/user-attachments/assets/a9842dac-4283-4217-8ba2-e5c23de775f6" />
 
-<img width="950" height="450" alt="Image" src="https://github.com/user-attachments/assets/0492bc79-b1f5-44fc-9ca1-6cb77cbfebe9" /> 
-<img width="950" height="450" alt="Image" src="https://github.com/user-attachments/assets/a9842dac-4283-4217-8ba2-e5c23de775f6" />
+4. While attempting to import all three tables into MYSQL several rows were missing from each dataset. Upon reviewing the three datasets I noticed empty cells/Null values for some of the number data type columns which was causing MYSQL to ignore these rows entirely on the load. I used the 'Replace' Function to change all Null number values to '0' after which the import was successful. Below we have the tables of our schema:
+<br>
+<img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/a16f0fe6-4ef6-47cb-a494-9ac1b5b3e804" />
 
-4. While attempting to import all three tables into the MYSQL database several rows were missing from each dataset 
+5. Next I looked over the data as a whole once more and dropped some of the columns which will not be used for any analysis relating to income or tuition, below is the code and further explanation on the reasoning for dropping each column from said table:
+```sql
+/* dropping slug, city, and control columns, slug is the non cleaned verision of the univeristy names
+Dropping city because dditional table are on a state level so need to look at the specific city, 
+Dropping control because we are looking at univerities as a whole and not classifying them into private/public
+*/
+ALTER TABLE collegesdata 
+	DROP COLUMN slug,
+	DROP COLUMN city,
+    DROP COLUMN control;
+
+/* Dropping several columns here, type distinguishes between private/public which will not be looking at,
+We filtered for 4 year schools only already in Excel so we will drop this now,
+Room_and_board, in_state_tuition and out_of_state_tuition all add up to the columns we are keeping with the total for each so we do not need these columns
+*/
+ALTER TABLE tuition_cost 
+	DROP COLUMN type,
+	DROP COLUMN degree_length,
+    DROP COLUMN room_and_board,
+    DROP COLUMN in_state_tuition,
+	DROP COLUMN out_of_state_tuition;
+```
+
+6.  
