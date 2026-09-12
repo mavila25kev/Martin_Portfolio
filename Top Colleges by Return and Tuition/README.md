@@ -24,3 +24,26 @@ Tools Used:
 1.  The colleges API website provides a sample line of python code to pull the API data and display it as a pandas DataFrame but I modified this slightly to convert the DataFrame into a csv file. This was done initially because I was going to use Power Bi to load the CSV for cleaning and generating visuals for analysis based off this single table. Later this would change as I ended up pulling in two additional datasets to suppliment the data from the top 500 colleges API but this is the reason why this was not coded to directly move into a MySQL database. Below is the code used in Jupyter Notebook to pull the college data in JSON format, convert to a pandas DF and then export as a CSV.
 
 
+```python
+import json, urllib.request
+import pandas as pd
+
+url = "https://le-teen.com/api/v1/colleges.json"
+with urllib.request.urlopen(url) as r:
+    data = json.load(r)
+
+
+colleges = data['colleges']
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', None)
+
+df = pd.DataFrame(colleges)
+df = df.drop(columns=['url'])
+
+
+df.to_csv('CollegesData.csv', index= False)
+```
+
+2.  
