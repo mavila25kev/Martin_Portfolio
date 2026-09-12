@@ -61,7 +61,7 @@ df.to_csv('CollegesData.csv', index= False)
 <br>
 <img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/a16f0fe6-4ef6-47cb-a494-9ac1b5b3e804" />
 
-5. Next I looked over the data as a whole once more and dropped some of the columns which will not be used for any analysis relating to income or tuition, below is the code and further explanation on the reasoning for dropping each column from said table:
+5. Next I looked over the data as a whole once more and dropped some of the columns which will not be used for any analysis relating to income or tuition, below are the statements used and further explanation on the reasoning for dropping each column from said table:
 ```sql
 /* dropping slug, city, and control columns, slug is the non cleaned verision of the univeristy names
 Dropping city because dditional table are on a state level so need to look at the specific city, 
@@ -84,4 +84,34 @@ ALTER TABLE tuition_cost
 	DROP COLUMN out_of_state_tuition;
 ```
 
-6.  
+6.  I created two CTE's to group data by state for both the tuition table and salary potential table. The average salary was taken by state and the average in state and out of state tuition as well per state, below are the statements used:
+```sql
+/* cte to find average of salary by state for early and mid career pay,
+ also removing the hyphen within the state name column for proper grouping
+*/
+with average_salary_by_state as
+(
+	select 
+		replace(state_name, '-', ' ') as state_name_clean,
+        round(avg(early_career_pay),0) as avg_early_career_pay,
+		round(avg(mid_career_pay),0) as avg_mid_career_pay
+	from salary_potential
+    group by state_name_clean
+)
+/* cte to find average of tutiion by state for in-state and out of state, multipying each average by 4 because these are 4 year colleges,
+ and filtering for non NA values in the state column which represent US territories
+*/
+, average_tuition_by_state as
+(
+	select 
+		state,
+        state_code,
+        round(avg(in_state_total*4),0) as avg_in_state_total,
+		round(avg(out_of_state_total*4),0) as avg_out_of_state_total
+	from tuition_cost
+    where state not like 'NA'
+    group by state, state_code
+)
+```
+
+7. 
