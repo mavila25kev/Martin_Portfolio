@@ -115,3 +115,63 @@ with average_salary_by_state as
 ```
 
 7. 
+
+```sql
+-- joining two tables to show avg tuition and salary
+, salary_and_tuition_by_state as
+( select
+	ats.state as state, 
+	ats.state_code as state_code, 
+    av.avg_early_career_pay as avg_earnings_year_0_10_by_state,
+    av.avg_mid_career_pay as avg_earnings_year_11_20_by_state,
+    ats.avg_in_state_total as avg_state_cost_of_attendance_resident_usd,
+    ats.avg_out_of_state_total as avg_state_cost_of_attendance_nonresident_usd
+from average_tuition_by_state as ats
+inner join average_salary_by_state as av on ats.state = av.state_name_clean
+order by ats.state, ats.state_code
+)
+
+-- joining our colleges data with each colleges state statistics
+,  colleges_final as (
+select 
+	cd.name,
+    cd.state_name,
+    cd.npv_30yr_resident_usd,
+    cd.npv_30yr_nonresident_usd,
+    cd.total_cost_of_attendance_usd,
+    cd.total_cost_of_attendance_nonresident_usd,
+    sts.avg_state_cost_of_attendance_resident_usd,
+    sts.avg_state_cost_of_attendance_nonresident_usd,
+    cd.median_earnings_10yr_usd,
+    sts.avg_earnings_year_0_10_by_state,
+    sts.avg_earnings_year_11_20_by_state,
+    cd.breakeven_age,
+    cd.freopp_program_coverage
+from collegesdata as cd
+left join salary_and_tuition_by_state as sts on cd.state = sts.state_code
+)
+```
+
+8. d
+
+```sql
+select 
+	name,
+    state_name,
+    npv_30yr_resident_usd,
+    npv_30yr_nonresident_usd,
+    median_earnings_10yr_usd,
+    avg_earnings_year_0_10_by_state,
+    median_earnings_10yr_usd - avg_earnings_year_0_10_by_state as difference_in_salary,
+    breakeven_age,
+    freopp_program_coverage
+from colleges_final
+where (npv_30yr_resident_usd > 500000) and (avg_earnings_year_0_10_by_state + 30000 < median_earnings_10yr_usd) and (median_earnings_10yr_usd >74000)
+order by npv_30yr_resident_usd desc, difference_in_salary desc, breakeven_age desc
+;
+```
+
+9. fsd
+
+<img width="1400" height="350" alt="Image" src="https://github.com/user-attachments/assets/c15baf5f-5277-473f-abc6-05db8122bebb" />
+
