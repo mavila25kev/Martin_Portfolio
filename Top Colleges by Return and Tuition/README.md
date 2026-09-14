@@ -12,6 +12,8 @@ Data Sources:
 
 Definitions: 
 - **NPV**: Present value of lifetime earnings - total cost of degree and opportunity cost
+- **Break Even Age**: The expected age a graduate would recoup the amount cost of attendance
+- **NPV_Non_Resident**: This value is set to 0 by default for certain schools is the difference with the NPV_Resident Value is negligible 
 
 Tools Used:
 - Python
@@ -114,7 +116,7 @@ with average_salary_by_state as
 )
 ```
 
-7. 
+7. The two CTEs above were then joined together on the state name column and renamed to provide more clarify to what 'mid and early career pay' meant in terms of years. Finally the CTE was joined to the main table on the state code and to get the final table for analysis. Below are the statements used to create each CTE and the final table is found in the CTE titled ' colleges_final '. 
 
 ```sql
 -- joining two tables to show avg tuition and salary
@@ -152,7 +154,7 @@ left join salary_and_tuition_by_state as sts on cd.state = sts.state_code
 )
 ```
 
-8. d
+8.  Once I had the final CTE, I ran the query below to return what I would consider to be a list of the top colleges in the US. This was a single query which was more so exploratory since the criteria used for filtering was determined by my opinion of values for tuition, salary, and NPV which would make a college one of the top tier schools to attend.  The values used in the 'where' clause are therefore somewhat arbitrary such as the statement filtering for schools which had a median 10 year pay $30,000 more than the average pay by the state it is located in at 10 years. The other statement filtering for median 10 year earnings greater than $74,000 was based off national statistics showing $74k to be the median 10 year national income for a college graduate. Note that a column has also been added here for additional insights titled 'difference_in_salary' used to gauge the difference in median earnings at 10 years for each college compared to the average earnings at 10 years for the school's state. Below is the query:
 
 ```sql
 select 
@@ -171,7 +173,24 @@ order by npv_30yr_resident_usd desc, difference_in_salary desc, breakeven_age de
 ;
 ```
 
-9. fsd
+9. This is the result of the above query which returned 14 colleges and was ordered by the NPV, difference in salary and the break even age. The results show colleges most would expect to see, Ivy League schools and schools known for this their technological/STEM programs. 
 
 <img width="1400" height="350" alt="Image" src="https://github.com/user-attachments/assets/c15baf5f-5277-473f-abc6-05db8122bebb" />
+
+<br>
+
+## Limitations and Liabilities
+
+1. The data from the tuition and salary potential tables are collected within a range of the last 10 years and may no longer reflect the present day circumstances for each.
+2. The sample sizes vary greatly for the averages and medians of income and tuition as some states have significantly lower colleges for which data is reported (ex. California/New York/Texas have more than 10 schools contributing to the means/median compared to several smaller states).
+3. For the purposes of joining all tables together, the averages of median values were used after grouping by state, this distorts the data and final figures stray from true median/average values. This normally should not be done as it is unintentionally introducing bias due to the sample sizes.
+4. Overall it is difficult to get accurate values for each college as circumstances vary greatly per person in terms of what they study, where they physically work after graduating and whether they pursue additional education after graduation. Additionally not all colleges report tuition, earnings, etc accurately or on yearly basis to the public.
+
+## Final Notes
+
+To reiterate, the goal of this project was to pull data from an API source, use different data extraction tools like MYSQL, Python and Excel, and utilize the various data cleaning capabilities of each tool. This could have been done entirely with either of the 3 tools and for future projects it may be simplified by pulling from the API via python directly into MYSQL, though the addition of supplementary data may require the knowledge of the capabilities of other resources in the real world which is why I chose to try this out. There are also lots of possibilities in what can be done with this data depending on what one wants to gain insights on. I chose not to explore here instead opting for a simply query but for data analysis purposes and gaining insights this could be heavily expanded on if more accurate supplementary data with greater sample sizes could be found which may be something to come back to in the future.
+
+## Files for Re-Creation
+
+The files used for this project can be found in the file folder.
 
