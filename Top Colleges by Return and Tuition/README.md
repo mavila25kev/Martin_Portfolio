@@ -192,5 +192,5 @@ To reiterate, the goal of this project was to pull data from an API source, use 
 
 ## Files for Re-Creation
 
-The files used for this project can be found in the file folder.
+The files used for this project can be found under the folder titled 'Top Colleges by Return and Tuition'
 
